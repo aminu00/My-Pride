@@ -1,21 +1,7 @@
 """
-FlowChat - single-file Flask chatbot app
-
+FlowChat - Compassionate menstrual health chatbot powered by Periodpal Framework
 Run: python app.py
-
-Dependencies:
-  pip install flask requests langdetect python-dotenv
-
-Before running, set your OpenRouter API key in an environment variable:
-  PowerShell (Windows):
-    $env:OPENROUTER_API_KEY = "sk-or-v1-..."
-  macOS / Linux:
-    export OPENROUTER_API_KEY="sk-or-v1-..."
-
-This app uses the browser Web Speech API for voice input and speechSynthesis for voice output.
-Server uses OpenRouter API with DeepSeek model for chat completions.
-
-Do NOT hardcode the key — put it in the environment variable `OPENROUTER_API_KEY`.
+Access: http://127.0.0.1:7860
 """
 from flask import Flask, request, jsonify, render_template_string, session
 import os
@@ -29,7 +15,7 @@ app.secret_key = os.environ.get('FLASK_SECRET', 'change-this-secret-for-prod')
 
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_KEY = "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"
-MODEL_NAME = "openai/gpt-3.5-turbo"  # Using a reliable, tested model
+MODEL_NAME = "openai/gpt-3.5-turbo"
 
 PERIODPAL_KNOWLEDGE = """You have access to the Periodpal Framework — a comprehensive menstrual health guide.
 Use this knowledge to inform your responses:
@@ -871,12 +857,8 @@ def chat():
 
 
 if __name__ == '__main__':
-  print('Starting FlowChat app...')
-  if not OPENROUTER_KEY:
-    print('WARNING: OPENROUTER_API_KEY environment variable not set. The app will not be able to call the model.')
-    print('Set it in PowerShell like: $env:OPENROUTER_API_KEY = "sk-or-..."')
-  else:
-    print('OpenRouter API key found ✓')
-  print('Access the app at: http://127.0.0.1:7860')
-  # debug True for development only
-  app.run(host='0.0.0.0', port=7860, debug=True)
+  print('🌸 Starting FlowChat...')
+  print('✓ API key loaded')
+  print('📱 Open: http://127.0.0.1:7860')
+  print('')
+  app.run(host='0.0.0.0', port=7860, debug=False)
