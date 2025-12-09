@@ -1,5 +1,5 @@
 """
-MY PRIDE - single-file Flask chatbot app
+FlowChat - single-file Flask chatbot app
 
 Run: python app.py
 
@@ -31,8 +31,27 @@ OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_KEY = "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"
 MODEL_NAME = "openai/gpt-3.5-turbo"  # Using a reliable, tested model
 
+PERIODPAL_KNOWLEDGE = """You have access to the Periodpal Framework — a comprehensive menstrual health guide.
+Use this knowledge to inform your responses:
+
+Content Areas:
+- PAD PROJECT: DIY reusable pad making with safe materials
+- PERIOD DELAY 101: Why periods come late (stress, nutrition, exercise, hormones, illness, travel, meds, puberty, nutrients, sleep, pregnancy)
+- MENSTRUAL STAGES: Detailed breakdowns of days 1-5 during menstruation with self-care tips
+- MENSTRUAL CYCLE PHASES: Follicular, ovulation, luteal phases with practical dos/don'ts
+- AFFIRMATIONS & BOOSTS: 50+ empowerment messages for period pain, mood, energy
+- MYTH vs TRUTH: Common myths debunked (tampons don't remove virginity, periods aren't dirty, etc.)
+- SANITARY PRODUCTS: Pads, tampons, cups, cloth pads with pros/cons and disposal tips
+- MENSTRUAL HYGIENE 101: Safe disposal, infection prevention, tracking
+- EMOTIONAL SUPPORT: Validation, mood swings, PMS handling, mental health link
+- DIET & LIFESTYLE: Iron foods, hydration, exercise, heat therapy, sleep
+- LGBTQ+ INCLUSION: Respectful language for all menstruators
+- LOW-COST SOLUTIONS: DIY pads, community resources for menstrual equity
+"""
+
 SYSTEM_PROMPT = (
-    "You are MY PRIDE, a caring and supportive digital big sister focused exclusively on women's health and wellness. 💕\n\n"
+    "You are FlowChat, a caring and supportive digital big sister focused exclusively on women's health and wellness. 💕\n\n"
+    + PERIODPAL_KNOWLEDGE + "\n"
     "Core Guidelines:\n"
     "1. ONLY respond to questions about:\n"
     "   - Menstrual health and hygiene\n"
@@ -42,19 +61,30 @@ SYSTEM_PROMPT = (
     "   - Gender-specific health concerns\n"
     "   - Community support and stigma topics\n\n"
     "2. For off-topic questions, gently say: 'I'm your sister for women's health questions. Could you ask me something about menstrual health, feminine wellness, or related concerns instead? 💝'\n\n"
+    "Response Format (Periodpal Style):\n"
+    "- Lead with an emoji relevant to the topic (🩸 for period, 🧼 for hygiene, 💪 for strength, etc.)\n"
+    "- Use clear section headers with emoji (e.g., '🌸 Self-Care Tips:' or '⚡ What's Happening:')\n"
+    "- Include 2-3 practical, actionable tips\n"
+    "- Add 1-2 empowering affirmations relevant to the topic\n"
+    "- Use warm, validating language - acknowledge feelings first\n"
+    "- Include relevant medical facts in simple terms\n"
+    "- End with an encouraging close ('You've got this! 💕' or similar)\n\n"
     "Style Guide:\n"
     "- Be warm, gentle, and understanding\n"
     "- Use simple, clear language\n"
-    "- Keep responses short (3-4 sentences)\n"
-    "- Add occasional emojis for warmth (💕 💝 🌸)\n"
-    "- Always validate feelings first\n"
-    "- Include practical, actionable advice\n\n"
+    "- Keep responses concise but informative (4-6 sentences + tips)\n"
+    "- Use emojis strategically for emphasis\n"
+    "- Always validate feelings before offering advice\n"
+    "- Frame period symptoms as normal, not taboo\n"
+    "- Empower with knowledge, not just sympathy\n\n"
     "Safety Rules:\n"
     "- Never give medical diagnoses\n"
-    "- Encourage doctor visits for concerns\n"
-    "- Focus on education and support\n"
-    "- Maintain privacy and respect\n\n"
-    "Remember: You're a supportive sister figure, not a medical professional. Make users feel heard, supported, and empowered while staying within women's health topics."
+    "- Encourage doctor visits for severe or persistent issues\n"
+    "- Focus on education and support over medication\n"
+    "- Maintain privacy and respect identity/pronouns\n"
+    "- Include disclaimer: 'If symptoms persist, consult a healthcare provider.'\n\n"
+    "Remember: Use the Periodpal framework to make every response educational, validating, and empowering. "
+    "You're a supportive sister figure helping users feel heard and confident in their bodies."
 )
 
 HTML = r'''
@@ -63,7 +93,7 @@ HTML = r'''
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MY PRIDE 💕 Talk periods. Track periods. Own your body.</title>
+  <title>FlowChat 💕 Talk periods. Track periods. Own your body.</title>
   <style>
     :root {
       --pink: #ff5a86;
@@ -332,13 +362,13 @@ HTML = r'''
 </head>
 <body>
   <header>
-    <h1>MY PRIDE 💕</h1>
+    <h1>FlowChat 💕</h1>
     <p class="lead">Talk periods. Track periods. Own your body.</p>
   </header>
   <div class="container">
     <div class="card">
       <div class="welcome">
-        <strong>Hey sis 💕</strong> I’m <strong>MY PRIDE</strong> — your digital big sister here to chat about anything period-related. Ask me anything!
+        <strong>Hey sis 💕</strong> I’m <strong>FlowChat</strong> — your digital big sister here to chat about anything period-related. Ask me anything!
         <div style="margin-top:8px;color:#8a4460;font-size:0.95rem">Use the controls below to speak or send your message.</div>
       </div>
 
@@ -401,7 +431,7 @@ HTML = r'''
     </div>
   </div>
 
-  <footer>MY PRIDE — your digital big sister</footer>
+  <footer>FlowChat — your digital big sister</footer>
 
   <script>
     const chat = document.getElementById('chat');
@@ -599,9 +629,9 @@ HTML = r'''
     listenBtn.addEventListener('click', ()=>{if(recognition){recognition.start();}});
     stopListenBtn.addEventListener('click', ()=>{if(recognition){recognition.stop();}});
 
-    // initial welcome bot message
-    append('bot', 'Hey sis 💕 I\u2019m MY PRIDE — your digital big sister here to chat about anything period-related. Ask me anything!');
-    speak('Hey sis, I am My Pride. I am your digital big sister. Ask me anything about periods.');
+  // initial welcome bot message
+  append('bot', 'Hey sis 💕 I\u2019m FlowChat — your digital big sister here to chat about anything period-related. Ask me anything!');
+  speak('Hey sis, I am FlowChat. I am your digital big sister. Ask me anything about periods.');
   </script>
 </body>
 </html>
@@ -616,7 +646,7 @@ def call_model(messages, max_tokens=512, timeout=30):
         'Authorization': f'Bearer {OPENROUTER_KEY}',
         'Content-Type': 'application/json',
         'HTTP-Referer': 'http://localhost:7860',
-        'X-Title': 'MY PRIDE'
+      'X-Title': 'FlowChat'
     }
 
     payload = {
@@ -655,20 +685,20 @@ def likely_women_health_related(text):
         'menstrual': [
             'period', 'menstru', 'cramp', 'pms', 'pad', 'tampon', 'flow', 'spot', 
             'bleed', 'sanitary', 'cycle', 'ovulat', 'cup', 'leak', 'stain', 'discharge',
-            'irregular', 'late', 'early', 'heavy', 'light', 'miss'
+            'irregular', 'late', 'early', 'heavy', 'light', 'miss', 'delay', 'reusable'
         ],
         'symptoms': [
             'pain', 'ache', 'tender', 'mood', 'emotion', 'irritable', 'fatigue',
-            'breast', 'bloat', 'nausea', 'headache', 'migraine', 'back pain'
+            'breast', 'bloat', 'nausea', 'headache', 'migraine', 'back pain', 'cramp'
         ],
         'wellness': [
             'pregnancy', 'pregnant', 'birth control', 'contraceptive', 'hormone',
             'fertil', 'reproduc', 'gyneco', 'health', 'hygiene', 'self-care', 
-            'stress', 'anxiety', 'depression', 'emotion'
+            'stress', 'anxiety', 'depression', 'emotion', 'pcos', 'endometrio'
         ],
         'support': [
             'shame', 'stigma', 'taboo', 'embarrass', 'afraid', 'worry', 'scared',
-            'normal', 'advice', 'help', 'support', 'sister', 'woman', 'girl'
+            'normal', 'advice', 'help', 'support', 'sister', 'woman', 'girl', 'strength'
         ]
     }
     
@@ -678,6 +708,47 @@ def likely_women_health_related(text):
     # Check if text contains any keywords
     t = (text or '').lower()
     return any(kw in t for kw in all_keywords)
+
+
+def enhance_with_periodpal_format(reply, topic='period'):
+    """
+    Enhance API response with Periodpal styling if not already formatted.
+    Adds emoji headers, structure, and empowerment elements.
+    """
+    # If response is very short or missing key Periodpal elements, enhance it
+    if len(reply) < 50 or ('\n' not in reply and '.' not in reply):
+        return reply
+    
+    # Check if already formatted with emoji and structure
+    if any(char in reply for char in ['🩸', '🌸', '💪', '✨', '⚡', '🌷', '💕']):
+        return reply  # Already formatted
+    
+    # Enhance by ensuring emojis and validation are present
+    topic_emoji = {
+        'cramps': '🩸',
+        'period': '🩸',
+        'pain': '🌸',
+        'hygiene': '🧼',
+        'products': '🛡️',
+        'cycle': '📅',
+        'mood': '💫',
+        'strength': '💪',
+        'support': '💕',
+        'affirmation': '✨'
+    }
+    
+    emoji = topic_emoji.get(topic, '🌸')
+    
+    # Add opening emoji if missing
+    if not reply.startswith(emoji) and not reply[0].isalpha():
+        reply = f"{emoji} {reply}"
+    
+    # Add empowerment closing if missing
+    if not reply.endswith(('💕', '💪', '✨', '🌸', '❤️')):
+        reply += "\n\nYou've got this, sis! 💕"
+    
+    return reply
+
 
 
 def build_prompt(user_message, history, lang_code='en'):
@@ -725,7 +796,7 @@ def chat():
     # Add the current message with clear instructions for menstruation-related context
     if likely_women_health_related(message):
         context_message = (
-            "Remember: You are MY PRIDE, a compassionate digital big sister. "
+          "Remember: You are FlowChat, a compassionate digital big sister. "
             "Provide empathetic, actionable advice about menstrual health. "
             "Give practical tips and emotional support. Stay focused on the user's needs."
         )
@@ -752,9 +823,13 @@ def chat():
         retry_messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": (
-                "Please answer this menstruation-related question directly and clearly in the same language as asked. "
-                "Provide empathetic, actionable tips and short steps. If the question mentions cramps/pain, include at least 3 safe self-care tips. "
-                "If the question mentions pad shortage or stigma, include practical alternatives and empowerment suggestions.\n\n"
+                "Please answer this menstruation-related question directly and clearly in the Periodpal format:\n"
+                "- Start with a relevant emoji (🩸 🌸 💪 ✨ etc.)\n"
+                "- Use section headers like '💡 What's Happening:' or '🧼 Self-Care Tips:'\n"
+                "- Include 2-3 practical tips\n"
+                "- Add an empowering affirmation\n"
+                "- Be warm and validating\n"
+                "Provide empathetic, actionable advice. Give practical tips and emotional support.\n\n"
                 f"Question: {message}"
             )}
         ]
@@ -762,6 +837,10 @@ def chat():
         if 'reply' in alt_res and alt_res['reply'].strip():
             reply = alt_res['reply'].strip()
             retry_needed = False
+
+    # Enhance with Periodpal format if applicable
+    if likely_women_health_related(message):
+        reply = enhance_with_periodpal_format(reply)
 
     # Final fallback: short built-in answers to ensure helpful output when HF fails twice
     if (not reply or retry_needed) and likely_women_health_related(message):
@@ -792,12 +871,12 @@ def chat():
 
 
 if __name__ == '__main__':
-    print('Starting MY PRIDE app...')
-    if not OPENROUTER_KEY:
-        print('WARNING: OPENROUTER_API_KEY environment variable not set. The app will not be able to call the model.')
-        print('Set it in PowerShell like: $env:OPENROUTER_API_KEY = "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"')
-    else:
-        print('OpenRouter API key found ✓')
-    print('Access the app at: http://127.0.0.1:7860')
-    # debug True for development only
-    app.run(host='0.0.0.0', port=7860, debug=True)
+  print('Starting FlowChat app...')
+  if not OPENROUTER_KEY:
+    print('WARNING: OPENROUTER_API_KEY environment variable not set. The app will not be able to call the model.')
+    print('Set it in PowerShell like: $env:OPENROUTER_API_KEY = "sk-or-..."')
+  else:
+    print('OpenRouter API key found ✓')
+  print('Access the app at: http://127.0.0.1:7860')
+  # debug True for development only
+  app.run(host='0.0.0.0', port=7860, debug=True)
